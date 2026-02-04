@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Portal | D Al Tamimi Capital</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+    <header class="header scrolled" style="background: var(--color-primary);">
+        <div class="container">
+            <div class="header-inner">
+                <a href="index.html" class="logo">
+                    <span class="logo-text" style="color: var(--color-white);">D. Al Tamimi Capital</span>
+                </a>
+                
+                <nav class="nav">
+                    <a href="index.html" style="color: rgba(255,255,255,0.7);">Home</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero hero-page" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div class="hero-content" style="padding-top: 0; width: 100%;">
+            <h4 style="color: var(--color-accent);">Partner Portal</h4>
+            <h1 style="color: var(--color-white); font-size: 2.5rem;">Secure Access</h1>
+            
+            <div class="portal-form" style="margin-top: var(--space-lg);">
+                <form>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" required>
+                    </div>
+                    
+                    <button type="button" class="btn btn-gold" style="width: 100%; justify-content: center; margin-top: var(--space-md);" onclick="alert('Portal access is currently being configured. Please contact us for assistance.')">Sign In</button>
+                </form>
+                
+                <p style="color: var(--color-gray); font-size: 0.85rem; text-align: center; margin-top: var(--space-lg); margin-bottom: 0;">
+                    Access is reserved for verified institutional partners.<br>
+                    <a href="contact.html" style="color: var(--color-accent);">Request access</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
