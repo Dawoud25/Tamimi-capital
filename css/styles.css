@@ -343,7 +343,7 @@ a { color: inherit; text-decoration: none; transition: color var(--duration-fast
     height: auto;
     transform: translate(-50%, -50%);
     object-fit: cover;
-    z-index: 0;
+    z-index: -1; /* Put video behind everything */
     opacity: 1; /* Show video immediately */
     transition: opacity 1s ease;
     /* Performance optimizations */

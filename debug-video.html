@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; padding: 0; }
+        .debug-container { 
+            position: relative; 
+            width: 100vw; 
+            height: 100vh; 
+            background: #222;
+            border: 5px solid yellow;
+        }
+        video { 
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 3px solid red;
+        }
+        .info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <div class="info">
+            <div>Video Debug Info:</div>
+            <div id="video-info">Loading...</div>
+        </div>
+        <video id="debug-video" autoplay muted loop playsinline controls>
+            <source src="video/hero-video-optimized.mp4" type="video/mp4">
+        </video>
+    </div>
+    
+    <script>
+        const video = document.getElementById('debug-video');
+        const info = document.getElementById('video-info');
+        
+        function updateInfo() {
+            info.innerHTML = `
+                Video Width: ${video.videoWidth || 'unknown'}<br>
+                Video Height: ${video.videoHeight || 'unknown'}<br>
+                Ready State: ${video.readyState}<br>
+                Current Time: ${video.currentTime.toFixed(2)}<br>
+                Duration: ${video.duration ? video.duration.toFixed(2) : 'unknown'}<br>
+                Paused: ${video.paused}<br>
+                Muted: ${video.muted}<br>
+                Element Width: ${video.offsetWidth}<br>
+                Element Height: ${video.offsetHeight}
+            `;
+        }
+        
+        video.addEventListener('loadedmetadata', updateInfo);
+        video.addEventListener('canplay', updateInfo);
+        video.addEventListener('timeupdate', updateInfo);
+        setInterval(updateInfo, 1000);
+    </script>
+</body>
+</html>
