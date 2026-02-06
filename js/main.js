@@ -87,6 +87,7 @@ function initVideo() {
     const video = document.querySelector('.hero-video');
     if (!video) return;
     
+    // When video can play, show it
     video.addEventListener('canplay', () => {
         video.classList.add('loaded');
     });
@@ -95,7 +96,15 @@ function initVideo() {
         video.classList.add('loaded');
     });
     
-    video.play().catch(() => {
+    // Also check if already ready
+    if (video.readyState >= 3) {
+        video.classList.add('loaded');
+    }
+    
+    // Try to play
+    video.play().catch((error) => {
+        console.log('Video autoplay prevented:', error);
+        // Still show the video even if autoplay fails
         video.classList.add('loaded');
     });
     
