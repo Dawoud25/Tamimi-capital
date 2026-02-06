@@ -139,22 +139,21 @@ function initVideo() {
         video.play().catch(e => console.log('Loop restart failed:', e));
     });
     
-    // Dynamic brightness adjustment for dark segments
+    // Dynamic brightness adjustment for dark segments - refined for better quality
     video.addEventListener('timeupdate', function() {
         const currentTime = video.currentTime;
         const videoDuration = video.duration || 16.58; // fallback duration
         
-        // Adjust these time ranges based on your video's dark segments
-        // You can fine-tune these values after testing
+        // More subtle adjustments to preserve quality
         if (currentTime > 5 && currentTime < 11) {
-            // Dark segment - increase brightness more
-            video.style.filter = 'brightness(1.2) contrast(1.1)';
+            // Dark segment - moderate brightness increase
+            video.style.filter = 'brightness(1.12) contrast(1.08) saturate(1.02)';
         } else if (currentTime > 11 && currentTime < 14) {
             // Medium brightness needed
-            video.style.filter = 'brightness(1.15) contrast(1.05)';
+            video.style.filter = 'brightness(1.08) contrast(1.05) saturate(1.01)';
         } else {
-            // Normal segments - slight enhancement
-            video.style.filter = 'brightness(1.1) contrast(1.05)';
+            // Normal segments - very slight enhancement
+            video.style.filter = 'brightness(1.02) contrast(1.02) saturate(1.0)';
         }
     });
     

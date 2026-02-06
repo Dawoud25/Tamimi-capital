@@ -16,8 +16,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Preload critical resources for faster loading -->
-    <link rel="preload" href="video/hero-video-md.mp4" as="video" type="video/mp4">
-    <link rel="preload" href="video/hero-video-hd.mp4" as="video" type="video/mp4" media="(min-width: 1025px)">
+    <link rel="preload" href="video/hero-video-balanced.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="video/hero-video-hd-balanced.mp4" as="video" type="video/mp4" media="(min-width: 1025px)">
     <link rel="preload" href="images/Dubai-skyline-image.png" as="image">
     
     <link rel="stylesheet" href="css/styles.css?v=20260206">
@@ -67,14 +67,14 @@
 
     <section class="hero">
         <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="images/Dubai-skyline-image.png">
-            <!-- HD for fast connections and large screens -->
-            <source src="video/hero-video-hd.mp4" type="video/mp4" media="(min-width: 1025px)">
+            <!-- HD balanced version for fast connections and large screens -->
+            <source src="video/hero-video-hd-balanced.mp4" type="video/mp4" media="(min-width: 1025px)">
             
-            <!-- Medium quality for most users -->
-            <source src="video/hero-video-md.mp4" type="video/mp4" media="(min-width: 769px)">
+            <!-- Medium balanced quality for most users -->
+            <source src="video/hero-video-balanced.mp4" type="video/mp4" media="(min-width: 769px)">
             
             <!-- Fallback for older devices -->
-            <source src="video/hero-video-brightened.mp4" type="video/mp4">
+            <source src="video/hero-video-md.mp4" type="video/mp4">
             
             Your browser does not support the video tag.
         </video>
