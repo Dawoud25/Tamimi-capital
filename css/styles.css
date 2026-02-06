@@ -494,7 +494,7 @@ video::-webkit-media-controls {
 
 .hero-content {
     position: relative;
-    z-index: 2;
+    z-index: 10;
     text-align: center;
     padding: var(--space-xl) var(--space-md);
     max-width: 1000px;
@@ -1096,4 +1096,135 @@ video::-webkit-media-controls {
 @media print {
     .header, .footer, .cookie-banner { display: none; }
     .hero { min-height: auto; padding: var(--space-lg); }
+}
+
+/* NUCLEAR OPTION: Invisible overlay to block ALL video interactions */
+.video-interaction-blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: transparent;
+    pointer-events: auto;
+    cursor: default;
+}
+
+/* Ensure hero content is above the blocker */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Ensure hero overlay is positioned correctly */
+.hero-overlay {
+    z-index: 2;
+}
+
+/* Additional aggressive video hiding - remove ALL possible interactivity */
+.hero-video {
+    pointer-events: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* Force remove controls attribute programmatically */
+.hero-video[controls] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-overlay-play-button,
+.hero-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ===== FINAL NUCLEAR OPTION FOR SAFARI VIDEO CONTROLS ===== */
+/* This CSS uses the most aggressive approach possible */
+
+.hero-video {
+    /* Remove all vendor prefixes and force appearance */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    appearance: none !important;
+    
+    /* Force background and styling */
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Target every possible Safari/WebKit media control element */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-play-button,
+.hero-video::-webkit-media-controls-overlay,
+.hero-video::-webkit-media-controls-overlay-play-button,
+.hero-video::-webkit-media-controls-overlay-play-button-internal,
+.hero-video::-webkit-media-controls-overlay-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-enclosure,
+.hero-video::-webkit-full-page-media,
+.hero-video::-webkit-media-controls-timeline-container,
+.hero-video::-webkit-media-controls-timeline,
+.hero-video::-webkit-media-controls-seek-back-button,
+.hero-video::-webkit-media-controls-seek-forward-button,
+.hero-video::-webkit-media-controls-fullscreen-button,
+.hero-video::-webkit-media-controls-rewind-button,
+.hero-video::-webkit-media-controls-return-to-realtime-button,
+.hero-video::-webkit-media-controls-mute-button,
+.hero-video::-webkit-media-controls-volume-slider,
+.hero-video::-webkit-media-controls-volume-slider-container,
+.hero-video::-webkit-media-controls-current-time-display,
+.hero-video::-webkit-media-controls-time-remaining-display,
+.hero-video::-webkit-media-controls-toggle-closed-captions-button {
+    /* Completely obliterate these elements */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0px !important;
+    height: 0px !important;
+    position: absolute !important;
+    top: -999999px !important;
+    left: -999999px !important;
+    z-index: -999999 !important;
+    pointer-events: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    content: "" !important;
+}
+
+/* Force video element to never show controls under ANY condition */
+.hero-video[controls],
+.hero-video[controls=""],
+.hero-video[controls="true"],
+.hero-video[controls="controls"] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Universal selector to catch any remaining control elements */
+.hero-video *,
+.hero-video *::before,
+.hero-video *::after {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }

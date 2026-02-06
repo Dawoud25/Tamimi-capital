@@ -87,68 +87,131 @@ function initVideo() {
     const video = document.querySelector('.hero-video');
     if (!video) return;
     
-    console.log('Initializing hero video...');
+    console.log('🎬 NUCLEAR VIDEO INITIALIZATION STARTING...');
     
-    // Force all necessary attributes
+    // NUCLEAR OPTION: Remove controls in every possible way
+    video.removeAttribute('controls');
+    video.controls = false;
+    
+    // Force all necessary attributes AGGRESSIVELY
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
-    video.controls = false;
     video.playsinline = true;
+    video.preload = 'auto';
+    
+    // Set attributes via DOM manipulation too
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
-    video.removeAttribute('controls');
-    
-    // Set preload and other attributes
-    video.preload = 'auto';
+    video.setAttribute('preload', 'auto');
     video.setAttribute('disablepictureinpicture', '');
     
-    // Prevent right-click context menu on video
-    video.addEventListener('contextmenu', (e) => e.preventDefault());
-    
-    // Handle load events
-    const onVideoReady = () => {
-        console.log('Video ready - showing and attempting autoplay');
-        video.style.opacity = '1';
-        video.classList.add('loaded');
+    // FORCE remove any controls that might appear
+    const removeControls = () => {
+        video.controls = false;
+        video.removeAttribute('controls');
         
-        // Attempt autoplay with retry mechanism
-        const attemptPlay = () => {
-            video.play()
-                .then(() => {
-                    console.log('Video autoplay successful');
-                })
-                .catch(error => {
-                    console.log('Autoplay failed:', error.message);
-                    // Try again after a short delay
-                    setTimeout(attemptPlay, 1000);
-                });
-        };
-        
-        attemptPlay();
-    };
-    
-    // Listen for various ready states
-    if (video.readyState >= 3) {
-        onVideoReady();
-    } else {
-        video.addEventListener('canplay', onVideoReady, { once: true });
-        video.addEventListener('loadeddata', onVideoReady, { once: true });
-    }
-    
-    // Force load if needed
-    video.load();
-    
-    // Additional fallback - try play on any user interaction
-    const playOnInteraction = () => {
-        if (video.paused) {
-            video.play().catch(e => console.log('Play on interaction failed:', e.message));
+        // Remove any shadow DOM controls (aggressive)
+        try {
+            const shadowRoot = video.shadowRoot;
+            if (shadowRoot) {
+                const controls = shadowRoot.querySelectorAll('[role="button"], button, [role="slider"]');
+                controls.forEach(control => control.remove());
+            }
+        } catch (e) {
+            // Ignore shadow DOM access errors
         }
     };
     
-    ['click', 'touchstart', 'keydown'].forEach(event => {
-        document.addEventListener(event, playOnInteraction, { once: true, passive: true });
+    // Apply control removal immediately and repeatedly
+    removeControls();
+    setInterval(removeControls, 100); // Every 100ms - very aggressive
+    
+    // Prevent ALL possible interactions
+    ['contextmenu', 'selectstart', 'dragstart'].forEach(event => {
+        video.addEventListener(event, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, { passive: false });
     });
+    
+    // Handle video loading and autoplay with multiple fallbacks
+    const handleVideoReady = () => {
+        console.log('🎬 Video ready - forcing visibility and autoplay');
+        removeControls(); // Remove controls again
+        
+        video.style.opacity = '1';
+        video.classList.add('loaded');
+        
+        // Multiple autoplay attempts
+        const playAttempts = [
+            () => video.play(),
+            () => {
+                video.muted = true;
+                return video.play();
+            },
+            () => {
+                video.load();
+                video.muted = true;
+                return video.play();
+            }
+        ];
+        
+        const tryPlay = (attemptIndex = 0) => {
+            if (attemptIndex >= playAttempts.length) {
+                console.log('🎬 All autoplay attempts exhausted');
+                return;
+            }
+            
+            playAttempts[attemptIndex]()
+                .then(() => {
+                    console.log(`🎬 Autoplay successful on attempt ${attemptIndex + 1}`);
+                })
+                .catch(error => {
+                    console.log(`🎬 Autoplay attempt ${attemptIndex + 1} failed:`, error.message);
+                    setTimeout(() => tryPlay(attemptIndex + 1), 500);
+                });
+        };
+        
+        tryPlay();
+    };
+    
+    // Multiple ready state listeners
+    if (video.readyState >= 3) {
+        handleVideoReady();
+    } else {
+        video.addEventListener('canplay', handleVideoReady, { once: true });
+        video.addEventListener('loadeddata', handleVideoReady, { once: true });
+        video.addEventListener('loadedmetadata', handleVideoReady, { once: true });
+    }
+    
+    // Force load
+    video.load();
+    
+    // User interaction fallbacks - try play on ANY user activity
+    const userEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
+    const playOnInteraction = () => {
+        if (video.paused) {
+            removeControls();
+            video.muted = true;
+            video.play()
+                .then(() => console.log('🎬 Play on user interaction successful'))
+                .catch(e => console.log('🎬 Play on interaction failed:', e.message));
+        }
+    };
+    
+    userEvents.forEach(event => {
+        document.addEventListener(event, playOnInteraction, { 
+            once: true, 
+            passive: event !== 'contextmenu' 
+        });
+    });
+    
+    console.log('🎬 NUCLEAR VIDEO INITIALIZATION COMPLETE');
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link => {
