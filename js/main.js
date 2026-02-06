@@ -85,47 +85,89 @@ function initCookieBanner() {
 
 function initVideo() {
     const video = document.querySelector('.hero-video');
-    if (!video) return;
+    if (!video) {
+        console.log('Video element not found');
+        return;
+    }
 
+    console.log('Initializing video...');
+
+    // FORCE REMOVE ALL CONTROLS
+    video.controls = false;
+    video.removeAttribute('controls');
+    
     // MUTE THE VIDEO (Required for auto-play in most browsers)
     video.muted = true;
+    video.volume = 0;
+    
+    // Additional attributes for better autoplay support
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
     
     // Preload metadata
     video.load();
 
-    // Try to play (muted videos usually work)
-    const playPromise = video.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.catch(() => {
-            // If auto-play fails, show video anyway
-            video.classList.add('loaded');
-        }).then(() => {
-            // Auto-play succeeded
-            video.classList.add('loaded');
-        });
-    }
-
-    // Add loaded event listeners
+    // Add loaded event listeners FIRST
     video.addEventListener('loadeddata', () => {
+        console.log('Video loadeddata event fired');
         video.classList.add('loaded');
     });
 
     video.addEventListener('canplay', () => {
+        console.log('Video canplay event fired');
         video.classList.add('loaded');
+    });
+
+    video.addEventListener('loadedmetadata', () => {
+        console.log('Video metadata loaded');
+        video.classList.add('loaded');
+    });
+
+    video.addEventListener('error', (e) => {
+        console.error('Video error:', e);
+        video.classList.add('loaded'); // Show poster/fallback on error
     });
 
     // Also check if already ready
     if (video.readyState >= 3) {
+        console.log('Video already ready, showing immediately');
         video.classList.add('loaded');
     }
+
+    // Try to play with proper Promise handling
+    const attemptPlay = () => {
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    console.log('Video autoplay succeeded');
+                    video.classList.add('loaded');
+                })
+                .catch((error) => {
+                    console.log('Video autoplay failed:', error);
+                    video.classList.add('loaded'); // Show even if autoplay fails
+                });
+        }
+    };
+
+    // Try to play immediately
+    attemptPlay();
+
+    // Also try after a short delay in case of timing issues
+    setTimeout(() => {
+        if (!video.classList.contains('loaded')) {
+            console.log('Retrying video play after delay');
+            attemptPlay();
+        }
+    }, 100);
 
     // Pause/play based on visibility
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    video.play().catch(() => {});
+                    video.play().catch(() => console.log('Intersection play failed'));
                 } else {
                     video.pause();
                 }
