@@ -103,6 +103,7 @@ function initVideo() {
     // Additional attributes for better autoplay support
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('preload', 'auto');
     
     // Preload metadata
     video.load();
@@ -130,50 +131,46 @@ function initVideo() {
 
     // Also check if already ready
     if (video.readyState >= 3) {
-        console.log('Video already ready, showing immediately');
         video.classList.add('loaded');
     }
 
-    // Try to play with proper Promise handling
-    const attemptPlay = () => {
+    // Try to auto-play (muted videos usually work)
+    const playVideo = () => {
         const playPromise = video.play();
         
         if (playPromise !== undefined) {
             playPromise
                 .then(() => {
-                    console.log('Video autoplay succeeded');
-                    video.classList.add('loaded');
+                    console.log('Video autoplay successful');
+                    video.classList.add('playing');
                 })
-                .catch((error) => {
-                    console.log('Video autoplay failed:', error);
-                    video.classList.add('loaded'); // Show even if autoplay fails
+                .catch(error => {
+                    console.log('Autoplay blocked or failed:', error.message);
+                    // Add a click-to-play fallback
+                    video.classList.add('click-to-play');
+                    
+                    // On user interaction, try to play
+                    document.addEventListener('click', () => {
+                        video.play().catch(e => console.log('Manual play failed:', e));
+                    }, { once: true });
                 });
         }
     };
 
     // Try to play immediately
-    attemptPlay();
-
-    // Also try after a short delay in case of timing issues
-    setTimeout(() => {
-        if (!video.classList.contains('loaded')) {
-            console.log('Retrying video play after delay');
-            attemptPlay();
-        }
-    }, 100);
+    playVideo();
 
     // Pause/play based on visibility
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    video.play().catch(() => console.log('Intersection play failed'));
+                    video.play().catch(() => {});
                 } else {
                     video.pause();
                 }
             });
         }, { threshold: 0.1 });
-        
         observer.observe(video);
     }
 }
