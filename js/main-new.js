@@ -1,23 +1,6 @@
 /* =====================================================
-   D AL TAMIMI CAPITAL - Javfunction initVideo() {
-    console.log('🎬 INITIALIZING HYBRID VIDEO SYSTEM...');
-    
-    // Detect Safari
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
-                     /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    console.log(`🔍 Browser detection: ${isSafari ? 'SAFARI' : 'NON-SAFARI'}`);
-    
-    // TEMPORARY: Use traditional video for all browsers to test
-    // Remove this line to go back to canvas approach for Safari
-    const useTraditionalVideo = true;
-    
-    if (isSafari && !useTraditionalVideo) {
-        initCanvasVideo();
-    } else {
-        initFallbackVideo();
-    }
-}================================================= */
+   D AL TAMIMI CAPITAL - JavaScript
+   ===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
     initHeader();
@@ -205,42 +188,6 @@ function initCanvasVideo() {
     setTimeout(forcePlay, 500);
     setTimeout(forcePlay, 1000);
     
-    // Enhanced autoplay with user interaction fallback
-    let playAttempts = 0;
-    let isPlaying = false;
-    
-    const checkPlayState = () => {
-        if (!video.paused) {
-            isPlaying = true;
-            console.log('✅ Safari video is playing via canvas');
-            return;
-        }
-        
-        playAttempts++;
-        console.log(`🔄 Play attempt ${playAttempts} for Safari video`);
-        
-        if (playAttempts < 5) {
-            video.play().catch(e => {
-                console.log(`⚠️ Play attempt ${playAttempts} failed:`, e.message);
-                setTimeout(checkPlayState, 1000);
-            });
-        } else {
-            console.log('📱 Safari: Waiting for user interaction to start video');
-            // Show subtle indication that user can click to play
-            const hero = document.querySelector('.hero');
-            if (hero && !isPlaying) {
-                hero.style.cursor = 'pointer';
-                hero.addEventListener('click', forcePlay, { once: true });
-                hero.addEventListener('touchstart', forcePlay, { once: true });
-            }
-        }
-    };
-    
-    video.addEventListener('loadedmetadata', checkPlayState);
-    setTimeout(checkPlayState, 100);
-    setTimeout(checkPlayState, 500);
-    setTimeout(checkPlayState, 1000);
-    
     // User interaction fallback
     document.addEventListener('click', forcePlay, { once: true });
     
@@ -248,33 +195,13 @@ function initCanvasVideo() {
 }
 
 function initFallbackVideo() {
-    console.log('📺 INITIALIZING TRADITIONAL VIDEO...');
+    console.log('📺 INITIALIZING FALLBACK VIDEO FOR NON-SAFARI...');
     
-    // Try to find any video element on the page
-    let video = document.querySelector('.hero-video-fallback') || 
-                document.querySelector('.hero-video-hidden') ||
-                document.querySelector('.hero-video');
-    
+    const video = document.querySelector('.hero-video-fallback');
     if (!video) {
-        console.error('No video element found');
+        console.error('Fallback video not found');
         return;
     }
-    
-    console.log('📺 Using video element:', video.className);
-    
-    // Make sure it's visible
-    video.style.display = 'block';
-    video.style.visibility = 'visible';
-    video.style.position = 'absolute';
-    video.style.top = '50%';
-    video.style.left = '50%';
-    video.style.transform = 'translate(-50%, -50%)';
-    video.style.minWidth = '100%';
-    video.style.minHeight = '100%';
-    video.style.width = 'auto';
-    video.style.height = 'auto';
-    video.style.objectFit = 'cover';
-    video.style.zIndex = '0';
     
     // Apply all the nuclear control hiding
     video.muted = true;
