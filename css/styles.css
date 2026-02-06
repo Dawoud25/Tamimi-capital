@@ -433,6 +433,7 @@ video::-webkit-media-controls {
 }
 
 .section-cream { background: var(--color-cream); }
+.section-accent { background: var(--color-accent); }
 .section-dark { background: var(--color-primary); color: var(--color-white); }
 .section-dark h2, .section-dark h3 { color: var(--color-white); }
 .section-dark p { color: rgba(255, 255, 255, 0.75); }
