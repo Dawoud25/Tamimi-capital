@@ -15,8 +15,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=20260206">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Safari-specific meta tags for video playback -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 </head>
 <body>
     <header class="header">
@@ -54,7 +62,7 @@
 
     <section class="hero">
         <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="images/Dubai-skyline-image.png">
-            <source src="video/hero-video.mp4" type="video/mp4">
+            <source src="video/hero-video.mp4?v=20260206" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         
@@ -276,6 +284,6 @@
         </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=20260206"></script>
 </body>
 </html>

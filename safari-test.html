@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Video Test - Cache Cleared</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .test-info {
+            background: #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .video-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            background: #111;
+            border: 2px solid #555;
+        }
+        .test-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* ALL SAFARI CONTROL HIDING */
+            -webkit-appearance: none !important;
+            appearance: none !important;
+        }
+        .test-video::-webkit-media-controls,
+        .test-video::-webkit-media-controls-panel,
+        .test-video::-webkit-media-controls-overlay-play-button,
+        .test-video::-webkit-media-controls-start-playback-button,
+        .test-video::-webkit-media-controls-enclosure {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #222;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h2>🔴 SAFARI VIDEO CACHE TEST</h2>
+        <p><strong>Current Time:</strong> <span id="timestamp"></span></p>
+        <p><strong>Cache Busted:</strong> YES (v=20260206)</p>
+        <p><strong>Safari Mode:</strong> NUCLEAR ACTIVATED</p>
+    </div>
+    
+    <div class="video-container">
+        <video class="test-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture>
+            <source src="video/hero-video.mp4?v=20260206&t=${Date.now()}" type="video/mp4">
+        </video>
+    </div>
+    
+    <div class="status" id="status">
+        Initializing video test...
+    </div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        const video = document.querySelector('.test-video');
+        const status = document.getElementById('status');
+        
+        // ULTRA AGGRESSIVE SAFARI FIX
+        const forceVideo = () => {
+            video.removeAttribute('controls');
+            video.controls = false;
+            video.muted = true;
+            video.volume = 0;
+            
+            status.innerHTML += `<br>🔄 Attempt at ${new Date().toLocaleTimeString()}`;
+            
+            video.play()
+                .then(() => {
+                    status.innerHTML += `<br>✅ SUCCESS: Video playing at ${new Date().toLocaleTimeString()}`;
+                })
+                .catch(e => {
+                    status.innerHTML += `<br>❌ FAILED: ${e.message}`;
+                });
+        };
+        
+        // Try immediately
+        video.addEventListener('loadeddata', forceVideo);
+        
+        // Try every 2 seconds
+        setInterval(forceVideo, 2000);
+        
+        // Try on any interaction
+        document.addEventListener('click', forceVideo);
+        document.addEventListener('touchstart', forceVideo);
+        
+        // Log video state
+        setInterval(() => {
+            const paused = video.paused ? '⏸️ PAUSED' : '▶️ PLAYING';
+            const muted = video.muted ? '🔇 MUTED' : '🔊 AUDIO';
+            const controls = video.controls ? '🎛️ CONTROLS' : '🚫 NO CONTROLS';
+            
+            document.getElementById('status').innerHTML = 
+                `${paused} | ${muted} | ${controls}<br>Current Time: ${video.currentTime.toFixed(1)}s`;
+        }, 1000);
+    </script>
+</body>
+</html>

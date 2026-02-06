@@ -211,7 +211,30 @@ function initVideo() {
         });
     });
     
-    console.log('🎬 NUCLEAR VIDEO INITIALIZATION COMPLETE');
+    // SAFARI EMERGENCY FIX: Force immediate play attempt
+    const safariEmergencyPlay = () => {
+        const video = document.querySelector('.hero-video');
+        if (video) {
+            console.log('🚨 SAFARI EMERGENCY: Forcing video play');
+            video.removeAttribute('controls');
+            video.controls = false;
+            video.muted = true;
+            video.volume = 0;
+            video.play().catch(console.log);
+        }
+    };
+    
+    // Try emergency play every second for the first 10 seconds
+    let attempts = 0;
+    const emergencyInterval = setInterval(() => {
+        safariEmergencyPlay();
+        attempts++;
+        if (attempts >= 10) {
+            clearInterval(emergencyInterval);
+        }
+    }, 1000);
+    
+    console.log('🎬 NUCLEAR VIDEO INITIALIZATION COMPLETE WITH SAFARI EMERGENCY MODE');
     
     /* ===== LAST RESORT: JavaScript video element replacement ===== */
     // If CSS doesn't work, we'll recreate the video element constantly
@@ -240,11 +263,10 @@ function initVideo() {
             newVideo.setAttribute('poster', 'images/Dubai-skyline-image.png');
             newVideo.style.opacity = '1';
             newVideo.classList.add('loaded');
-            
-            // Add source
-            const source = document.createElement('source');
-            source.src = 'video/hero-video.mp4';
-            source.type = 'video/mp4';
+                 // Add source
+        const source = document.createElement('source');
+        source.src = 'video/hero-video.mp4?v=20260206';
+        source.type = 'video/mp4';
             newVideo.appendChild(source);
             
             // Store current playback state
@@ -272,8 +294,8 @@ function initVideo() {
         }, 500);
     }
     
-    // Uncomment this nuclear option if controls still appear:
-    // nuclearVideoControlRemoval();
+    // ACTIVATE NUCLEAR OPTION for Safari:
+    nuclearVideoControlRemoval();
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link => {
