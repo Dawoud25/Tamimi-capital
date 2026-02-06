@@ -7,33 +7,44 @@
     <style>
         body { margin: 0; padding: 50px; background: #f0f0f0; }
         .test-container { margin-bottom: 50px; }
-        .logo { display: flex; align-items: center; height: 70px; }
+        .logo { display: flex; align-items: center; height: 50px; }
         .logo-img { height: 100%; width: auto; }
         .dark-bg { background: #0a1628; padding: 20px; }
         .light-bg { background: white; padding: 20px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
-    <h1>Logo Test Page - Updated SVG Format</h1>
+    <h1>Bilingual Logo Test - Arabic + English Design</h1>
     
     <div class="test-container">
-        <h2>Light Logo (for dark backgrounds) - Current Format:</h2>
+        <h2>Light Logo (for dark backgrounds) - Bilingual Design:</h2>
         <div class="dark-bg">
             <a href="#" class="logo">
                 <img src="images/logo-light.svg" alt="D. Al Tamimi Capital" class="logo-img">
             </a>
         </div>
-        <p><strong>Should show:</strong> "D. AL TAMIMI" on top line, "CAPITAL" on bottom line, white text</p>
+        <p><strong>Should show:</strong> Arabic "د. التميمي كابيتال" on top, gold line separator, "D. AL TAMIMI CAPITAL" below, all in white</p>
     </div>
     
     <div class="test-container">
-        <h2>Dark Logo (for light backgrounds) - Current Format:</h2>
+        <h2>Dark Logo (for light backgrounds) - Bilingual Design:</h2>
         <div class="light-bg">
             <a href="#" class="logo">
                 <img src="images/logo-dark.svg" alt="D. Al Tamimi Capital" class="logo-img">
             </a>
         </div>
-        <p><strong>Should show:</strong> "D. AL TAMIMI" on top line, "CAPITAL" on bottom line, dark text</p>
+        <p><strong>Should show:</strong> Arabic "د. التميمي كابيتال" on top, gold line separator, "D. AL TAMIMI CAPITAL" below, all in dark blue</p>
+    </div>
+    
+    <div class="test-container">
+        <h2>Logo Swapping Test (simulating scrolled header):</h2>
+        <div class="light-bg">
+            <a href="#" class="logo">
+                <img src="images/logo-light.svg" alt="D. Al Tamimi Capital" class="logo-img logo-light" style="display:none;">
+                <img src="images/logo-dark.svg" alt="D. Al Tamimi Capital" class="logo-img logo-dark" style="display:block;">
+            </a>
+        </div>
+        <p><strong>This simulates:</strong> What you see when the header is scrolled (white background, dark logo)</p>
     </div>
     
     <div class="test-container">

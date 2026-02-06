@@ -1,11 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="320" height="80" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- English D. AL TAMIMI top line -->
-  <text x="20" y="32" font-family="serif" font-size="20" font-weight="400" fill="#0a1628" letter-spacing="2px">
-    D. AL TAMIMI
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140" width="400" height="140">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Cormorant+Garamond:wght@400;500;600&display=swap');
+    
+    .arabic {
+      font-family: 'Almarai', sans-serif;
+      font-weight: 700;
+      font-size: 42px;
+      fill: #0a1628;
+    }
+    
+    .english {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 34px;
+      letter-spacing: 1.2px;
+      fill: #0a1628;
+    }
+    
+    .capital {
+      font-weight: 500;
+      letter-spacing: 2px;
+      font-size: 30px;
+    }
+    
+    .gold-line {
+      stroke: #C4A962;
+      stroke-width: 2;
+    }
+  </style>
+  
+  <text x="200" y="55" text-anchor="middle" class="arabic" direction="rtl">
+    د. التميمي كابيتال
   </text>
-  <!-- CAPITAL bottom line -->
-  <text x="20" y="58" font-family="serif" font-size="20" font-weight="300" fill="#0a1628" letter-spacing="4px">
-    CAPITAL
+  
+  <line x1="80" y1="70" x2="320" y2="70" class="gold-line" />
+  
+  <text x="200" y="115" text-anchor="middle" class="english">
+    <tspan>D. AL TAMIMI </tspan>
+    <tspan class="capital">CAPITAL</tspan>
   </text>
 </svg>
