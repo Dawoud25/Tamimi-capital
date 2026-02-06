@@ -53,8 +53,9 @@
     </header>
 
     <section class="hero">
-        <video class="hero-video" autoplay muted loop playsinline poster="images/Dubai-skyline-image.png">
+        <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="images/Dubai-skyline-image.png">
             <source src="video/hero-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
         </video>
         
         <img src="images/Dubai-skyline-image.png" alt="" class="hero-bg">
@@ -273,26 +274,5 @@
     </div>
 
     <script src="js/main.js"></script>
-    <script>
-        // ULTRA SIMPLE VIDEO FIX
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('.hero-video');
-            if (video) {
-                console.log('Video found - applying simple fix');
-                video.muted = true;
-                video.controls = false;
-                video.removeAttribute('controls');
-                
-                // Show video immediately
-                video.style.opacity = '1';
-                video.classList.add('loaded');
-                
-                // Try to play
-                setTimeout(() => {
-                    video.play().catch(e => console.log('Autoplay blocked:', e.message));
-                }, 500);
-            }
-        });
-    </script>
 </body>
 </html>

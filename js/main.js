@@ -84,21 +84,70 @@ function initCookieBanner() {
 }
 
 function initVideo() {
-    // Simple video initialization - most work done by inline script
     const video = document.querySelector('.hero-video');
     if (!video) return;
     
-    // Basic setup
+    console.log('Initializing hero video...');
+    
+    // Force all necessary attributes
     video.muted = true;
+    video.autoplay = true;
+    video.loop = true;
     video.controls = false;
+    video.playsinline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.removeAttribute('controls');
     
-    // Add loaded class when ready
-    video.addEventListener('canplay', () => {
-        video.classList.add('loaded');
-    });
+    // Set preload and other attributes
+    video.preload = 'auto';
+    video.setAttribute('disablepictureinpicture', '');
     
-    video.addEventListener('loadeddata', () => {
+    // Prevent right-click context menu on video
+    video.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Handle load events
+    const onVideoReady = () => {
+        console.log('Video ready - showing and attempting autoplay');
+        video.style.opacity = '1';
         video.classList.add('loaded');
+        
+        // Attempt autoplay with retry mechanism
+        const attemptPlay = () => {
+            video.play()
+                .then(() => {
+                    console.log('Video autoplay successful');
+                })
+                .catch(error => {
+                    console.log('Autoplay failed:', error.message);
+                    // Try again after a short delay
+                    setTimeout(attemptPlay, 1000);
+                });
+        };
+        
+        attemptPlay();
+    };
+    
+    // Listen for various ready states
+    if (video.readyState >= 3) {
+        onVideoReady();
+    } else {
+        video.addEventListener('canplay', onVideoReady, { once: true });
+        video.addEventListener('loadeddata', onVideoReady, { once: true });
+    }
+    
+    // Force load if needed
+    video.load();
+    
+    // Additional fallback - try play on any user interaction
+    const playOnInteraction = () => {
+        if (video.paused) {
+            video.play().catch(e => console.log('Play on interaction failed:', e.message));
+        }
+    };
+    
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, playOnInteraction, { once: true, passive: true });
     });
 }
 
