@@ -86,28 +86,41 @@ function initCookieBanner() {
 function initVideo() {
     const video = document.querySelector('.hero-video');
     if (!video) return;
+
+    // MUTE THE VIDEO (Required for auto-play in most browsers)
+    video.muted = true;
     
-    // When video can play, show it
-    video.addEventListener('canplay', () => {
-        video.classList.add('loaded');
-    });
+    // Preload metadata
+    video.load();
+
+    // Try to play (muted videos usually work)
+    const playPromise = video.play();
     
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            // If auto-play fails, show video anyway
+            video.classList.add('loaded');
+        }).then(() => {
+            // Auto-play succeeded
+            video.classList.add('loaded');
+        });
+    }
+
+    // Add loaded event listeners
     video.addEventListener('loadeddata', () => {
         video.classList.add('loaded');
     });
-    
+
+    video.addEventListener('canplay', () => {
+        video.classList.add('loaded');
+    });
+
     // Also check if already ready
     if (video.readyState >= 3) {
         video.classList.add('loaded');
     }
-    
-    // Try to play
-    video.play().catch((error) => {
-        console.log('Video autoplay prevented:', error);
-        // Still show the video even if autoplay fails
-        video.classList.add('loaded');
-    });
-    
+
+    // Pause/play based on visibility
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {

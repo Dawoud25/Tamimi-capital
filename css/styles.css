@@ -303,6 +303,14 @@ video::-webkit-media-controls {
     .hero-bg { display: block !important; }
 }
 
+/* Video fallback - if video fails to load, ensure background image shows */
+.hero {
+    background-image: url('../images/Dubai-skyline-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .hero-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
