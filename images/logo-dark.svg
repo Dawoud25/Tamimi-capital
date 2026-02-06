@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="280" height="60" viewBox="0 0 280 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <text x="20" y="40" font-family="serif" font-size="18" font-weight="400" fill="#0a1628" letter-spacing="3px" text-anchor="start">
-    د. AL TAMIMI CAPITAL
+<svg width="320" height="80" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- English D. AL TAMIMI top line -->
+  <text x="20" y="32" font-family="serif" font-size="20" font-weight="400" fill="#0a1628" letter-spacing="2px">
+    D. AL TAMIMI
+  </text>
+  <!-- CAPITAL bottom line -->
+  <text x="20" y="58" font-family="serif" font-size="20" font-weight="300" fill="#0a1628" letter-spacing="4px">
+    CAPITAL
   </text>
 </svg>
