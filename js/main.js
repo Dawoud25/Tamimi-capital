@@ -212,12 +212,74 @@ function initVideo() {
     });
     
     console.log('🎬 NUCLEAR VIDEO INITIALIZATION COMPLETE');
+    
+    /* ===== LAST RESORT: JavaScript video element replacement ===== */
+    // If CSS doesn't work, we'll recreate the video element constantly
+    function nuclearVideoControlRemoval() {
+        const video = document.querySelector('.hero-video');
+        if (!video) return;
+        
+        console.log('🚨 DEPLOYING LAST RESORT: Video element replacement');
+        
+        let isPlaying = false;
+        let currentTime = 0;
+        
+        const recreateVideo = () => {
+            const parent = video.parentNode;
+            const newVideo = document.createElement('video');
+            
+            // Copy all attributes
+            newVideo.className = 'hero-video';
+            newVideo.autoplay = true;
+            newVideo.muted = true;
+            newVideo.loop = true;
+            newVideo.playsinline = true;
+            newVideo.setAttribute('webkit-playsinline', '');
+            newVideo.setAttribute('preload', 'auto');
+            newVideo.setAttribute('disablepictureinpicture', '');
+            newVideo.setAttribute('poster', 'images/Dubai-skyline-image.png');
+            newVideo.style.opacity = '1';
+            newVideo.classList.add('loaded');
+            
+            // Add source
+            const source = document.createElement('source');
+            source.src = 'video/hero-video.mp4';
+            source.type = 'video/mp4';
+            newVideo.appendChild(source);
+            
+            // Store current playback state
+            if (video && !video.paused) {
+                currentTime = video.currentTime;
+                isPlaying = true;
+            }
+            
+            // Replace the old video
+            parent.replaceChild(newVideo, video);
+            
+            // Restore playback state
+            newVideo.currentTime = currentTime;
+            if (isPlaying) {
+                newVideo.play().catch(console.log);
+            }
+            
+            console.log('🚨 Video element replaced');
+            return newVideo;
+        };
+        
+        // Replace video element every 500ms to prevent controls
+        setInterval(() => {
+            recreateVideo();
+        }, 500);
+    }
+    
+    // Uncomment this nuclear option if controls still appear:
+    // nuclearVideoControlRemoval();
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
-        if (href === '#') return;
+        if (href === '#' || href === '#!') return;
         
         const target = document.querySelector(href);
         if (target) {
