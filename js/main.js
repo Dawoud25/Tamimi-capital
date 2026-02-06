@@ -84,95 +84,22 @@ function initCookieBanner() {
 }
 
 function initVideo() {
+    // Simple video initialization - most work done by inline script
     const video = document.querySelector('.hero-video');
-    if (!video) {
-        console.log('Video element not found');
-        return;
-    }
-
-    console.log('Initializing video...');
-
-    // FORCE REMOVE ALL CONTROLS
-    video.controls = false;
-    video.removeAttribute('controls');
+    if (!video) return;
     
-    // MUTE THE VIDEO (Required for auto-play in most browsers)
+    // Basic setup
     video.muted = true;
-    video.volume = 0;
+    video.controls = false;
     
-    // Additional attributes for better autoplay support
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('preload', 'auto');
-    
-    // Preload metadata
-    video.load();
-
-    // Add loaded event listeners FIRST
-    video.addEventListener('loadeddata', () => {
-        console.log('Video loadeddata event fired');
-        video.classList.add('loaded');
-    });
-
+    // Add loaded class when ready
     video.addEventListener('canplay', () => {
-        console.log('Video canplay event fired');
         video.classList.add('loaded');
     });
-
-    video.addEventListener('loadedmetadata', () => {
-        console.log('Video metadata loaded');
+    
+    video.addEventListener('loadeddata', () => {
         video.classList.add('loaded');
     });
-
-    video.addEventListener('error', (e) => {
-        console.error('Video error:', e);
-        video.classList.add('loaded'); // Show poster/fallback on error
-    });
-
-    // Also check if already ready
-    if (video.readyState >= 3) {
-        video.classList.add('loaded');
-    }
-
-    // Try to auto-play (muted videos usually work)
-    const playVideo = () => {
-        const playPromise = video.play();
-        
-        if (playPromise !== undefined) {
-            playPromise
-                .then(() => {
-                    console.log('Video autoplay successful');
-                    video.classList.add('playing');
-                })
-                .catch(error => {
-                    console.log('Autoplay blocked or failed:', error.message);
-                    // Add a click-to-play fallback
-                    video.classList.add('click-to-play');
-                    
-                    // On user interaction, try to play
-                    document.addEventListener('click', () => {
-                        video.play().catch(e => console.log('Manual play failed:', e));
-                    }, { once: true });
-                });
-        }
-    };
-
-    // Try to play immediately
-    playVideo();
-
-    // Pause/play based on visibility
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    video.play().catch(() => {});
-                } else {
-                    video.pause();
-                }
-            });
-        }, { threshold: 0.1 });
-        observer.observe(video);
-    }
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(link => {

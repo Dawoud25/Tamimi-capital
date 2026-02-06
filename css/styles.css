@@ -258,74 +258,17 @@ a { color: inherit; text-decoration: none; transition: color var(--duration-fast
 
 .hero-video.loaded { opacity: 1; }
 
-/* COMPREHENSIVE VIDEO CONTROL HIDING */
+/* SIMPLE VIDEO CONTROL HIDING */
+.hero-video::-webkit-media-controls {
+    display: none !important;
+}
+
 .hero-video::-webkit-media-controls-start-playback-button {
     display: none !important;
-    -webkit-appearance: none;
 }
 
-.hero-video::-webkit-media-controls-enclosure {
-    display: none !important;
-}
-
-.hero-video::-webkit-media-controls-panel {
-    display: none !important;
-}
-
-.hero-video::-webkit-media-controls-play-button {
-    display: none !important;
-}
-
-video::-webkit-media-controls {
-    display: none !important;
-}
-
-video::-webkit-media-controls-enclosure {
-    display: none !important;
-}
-
-video::-webkit-media-controls-overlay-enclosure {
-    display: none !important;
-}
-
-video::-webkit-media-controls-panel {
-    display: none !important;
-}
-
-/* More aggressive hiding of controls */
 .hero-video {
-    -webkit-appearance: none;
-    appearance: none;
     outline: none !important;
-    border: none !important;
-}
-
-.hero-video:focus {
-    outline: none !important;
-}
-
-/* Video play button fallback */
-.hero-video.click-to-play {
-    cursor: pointer;
-}
-
-.hero-video.click-to-play::after {
-    content: '▶';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    z-index: 10;
-    pointer-events: none;
 }
 
 .hero-bg {

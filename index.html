@@ -53,9 +53,8 @@
     </header>
 
     <section class="hero">
-        <video class="hero-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture x-webkit-airplay="deny" poster="images/Dubai-skyline-image.png" style="pointer-events: none; -webkit-appearance: none; appearance: none;">
+        <video class="hero-video" autoplay muted loop playsinline poster="images/Dubai-skyline-image.png">
             <source src="video/hero-video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
         
         <img src="images/Dubai-skyline-image.png" alt="" class="hero-bg">
@@ -275,53 +274,24 @@
 
     <script src="js/main.js"></script>
     <script>
-        // Direct video fix
+        // ULTRA SIMPLE VIDEO FIX
         document.addEventListener('DOMContentLoaded', function() {
             const video = document.querySelector('.hero-video');
             if (video) {
+                console.log('Video found - applying simple fix');
                 video.muted = true;
                 video.controls = false;
-                video.play().catch(() => {
-                    console.log('Autoplay prevented, but video should still be visible');
-                });
-                setTimeout(() => video.classList.add('loaded'), 100);
+                video.removeAttribute('controls');
+                
+                // Show video immediately
+                video.style.opacity = '1';
+                video.classList.add('loaded');
+                
+                // Try to play
+                setTimeout(() => {
+                    video.play().catch(e => console.log('Autoplay blocked:', e.message));
+                }, 500);
             }
-        });
-    </script>
-    <script>
-        // Debug video
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.querySelector('.hero-video');
-            if (!video) {
-                console.error('❌ No video element found');
-                return;
-            }
-            
-            console.log('✅ Video element found');
-            console.log('📊 Video src:', video.querySelector('source').src);
-            console.log('🔇 Video muted:', video.muted);
-            console.log('🎮 Video controls:', video.controls);
-            console.log('📦 Video readyState:', video.readyState);
-            
-            // Check if video loads
-            video.addEventListener('error', function(e) {
-                console.error('❌ Video error:', e);
-                console.error('❌ Video error code:', video.error.code);
-                console.error('❌ Video error message:', video.error.message);
-            });
-            
-            // Check network loading
-            video.addEventListener('stalled', function() {
-                console.error('❌ Video stalled - network problem');
-            });
-            
-            // Force try to play after 2 seconds
-            setTimeout(() => {
-                console.log('🔄 Attempting to play video...');
-                video.play()
-                    .then(() => console.log('✅ Video playing successfully'))
-                    .catch(e => console.log('⚠️ Play failed:', e.message));
-            }, 2000);
         });
     </script>
 </body>
