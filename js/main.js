@@ -87,44 +87,23 @@ function initVideo() {
     const video = document.querySelector('.hero-video');
     if (!video) return;
     
-    // Add multiple event listeners for better loading detection
-    video.addEventListener('loadeddata', () => {
-        video.classList.add('loaded');
-        console.log('Video loaded successfully');
-    });
-    
     video.addEventListener('canplay', () => {
         video.classList.add('loaded');
-        console.log('Video can play');
     });
     
-    video.addEventListener('error', (e) => {
-        console.log('Video error:', e);
-        video.classList.add('loaded'); // Show poster on error
+    video.addEventListener('loadeddata', () => {
+        video.classList.add('loaded');
     });
     
-    // Try to play the video
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-        playPromise
-            .then(() => {
-                console.log('Video playing successfully');
-                video.classList.add('loaded');
-            })
-            .catch((error) => {
-                console.log('Video play failed:', error);
-                video.classList.add('loaded'); // Show poster on failure
-                video.muted = true; // Ensure muted
-                video.play().catch(() => console.log('Muted play also failed'));
-            });
-    }
+    video.play().catch(() => {
+        video.classList.add('loaded');
+    });
     
-    // Intersection Observer for play/pause on scroll
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    video.play().catch(() => console.log('Scroll play failed'));
+                    video.play().catch(() => {});
                 } else {
                     video.pause();
                 }
