@@ -84,220 +84,186 @@ function initCookieBanner() {
 }
 
 function initVideo() {
-    const video = document.querySelector('.hero-video');
-    if (!video) return;
+    console.log('🎬 INITIALIZING HYBRID VIDEO SYSTEM...');
     
-    console.log('🎬 NUCLEAR VIDEO INITIALIZATION STARTING...');
+    // Detect Safari
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                     /iPad|iPhone|iPod/.test(navigator.userAgent);
     
-    // NUCLEAR OPTION: Remove controls in every possible way
-    video.removeAttribute('controls');
+    console.log(`🔍 Browser detection: ${isSafari ? 'SAFARI' : 'NON-SAFARI'}`);
+    
+    if (isSafari) {
+        initCanvasVideo();
+    } else {
+        initFallbackVideo();
+    }
+}
+
+function initCanvasVideo() {
+    console.log('🎨 INITIALIZING CANVAS VIDEO FOR SAFARI...');
+    
+    const canvas = document.getElementById('heroCanvas');
+    const video = document.getElementById('heroVideoHidden');
+    
+    if (!canvas || !video) {
+        console.error('Canvas or hidden video not found');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    // Resize canvas to match container
+    function resizeCanvas() {
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            canvas.width = hero.offsetWidth;
+            canvas.height = hero.offsetHeight;
+            console.log(`📐 Canvas resized to ${canvas.width}x${canvas.height}`);
+        }
+    }
+    
+    // Render video frames to canvas
+    function renderFrame() {
+        if (video.readyState >= video.HAVE_CURRENT_DATA) {
+            // Calculate aspect ratio and positioning
+            const videoAspect = video.videoWidth / video.videoHeight;
+            const canvasAspect = canvas.width / canvas.height;
+            
+            let sx, sy, sw, sh;
+            
+            if (videoAspect > canvasAspect) {
+                // Video is wider - crop sides
+                sh = video.videoHeight;
+                sw = sh * canvasAspect;
+                sx = (video.videoWidth - sw) / 2;
+                sy = 0;
+            } else {
+                // Video is taller - crop top/bottom
+                sw = video.videoWidth;
+                sh = sw / canvasAspect;
+                sx = 0;
+                sy = (video.videoHeight - sh) / 2;
+            }
+            
+            ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+        }
+        animationId = requestAnimationFrame(renderFrame);
+    }
+    
+    // Initialize
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // AGGRESSIVE video setup for Safari
+    video.muted = true;
+    video.volume = 0;
     video.controls = false;
+    video.removeAttribute('controls');
     
-    // Force all necessary attributes AGGRESSIVELY
+    video.addEventListener('loadeddata', () => {
+        console.log('✅ Safari video loaded, starting canvas rendering');
+        renderFrame();
+        canvas.style.opacity = '1';
+    });
+    
+    video.addEventListener('canplay', () => {
+        console.log('✅ Safari video can play');
+        if (video.paused) {
+            video.play().catch(console.log);
+        }
+    });
+    
+    // Force play attempts
+    const forcePlay = () => {
+        video.muted = true;
+        video.controls = false;
+        video.play()
+            .then(() => console.log('✅ Safari video playing via canvas'))
+            .catch(e => console.log('⚠️ Safari autoplay blocked:', e.message));
+    };
+    
+    video.addEventListener('loadedmetadata', forcePlay);
+    setTimeout(forcePlay, 100);
+    setTimeout(forcePlay, 500);
+    setTimeout(forcePlay, 1000);
+    
+    // User interaction fallback
+    document.addEventListener('click', forcePlay, { once: true });
+    
+    console.log('🎨 Canvas video system initialized');
+}
+
+function initFallbackVideo() {
+    console.log('📺 INITIALIZING FALLBACK VIDEO FOR NON-SAFARI...');
+    
+    const video = document.querySelector('.hero-video-fallback');
+    if (!video) {
+        console.error('Fallback video not found');
+        return;
+    }
+    
+    // Apply all the nuclear control hiding
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
+    video.controls = false;
     video.playsinline = true;
-    video.preload = 'auto';
-    
-    // Set attributes via DOM manipulation too
-    video.setAttribute('muted', '');
-    video.setAttribute('autoplay', '');
-    video.setAttribute('loop', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('preload', 'auto');
-    video.setAttribute('disablepictureinpicture', '');
+    video.removeAttribute('controls');
     
-    // FORCE remove any controls that might appear
+    // Remove controls aggressively
     const removeControls = () => {
         video.controls = false;
         video.removeAttribute('controls');
-        
-        // Remove any shadow DOM controls (aggressive)
-        try {
-            const shadowRoot = video.shadowRoot;
-            if (shadowRoot) {
-                const controls = shadowRoot.querySelectorAll('[role="button"], button, [role="slider"]');
-                controls.forEach(control => control.remove());
-            }
-        } catch (e) {
-            // Ignore shadow DOM access errors
-        }
     };
     
-    // Apply control removal immediately and repeatedly
     removeControls();
-    setInterval(removeControls, 100); // Every 100ms - very aggressive
+    setInterval(removeControls, 100);
     
-    // Prevent ALL possible interactions
-    ['contextmenu', 'selectstart', 'dragstart'].forEach(event => {
-        video.addEventListener(event, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }, { passive: false });
-    });
-    
-    // Handle video loading and autoplay with multiple fallbacks
-    const handleVideoReady = () => {
-        console.log('🎬 Video ready - forcing visibility and autoplay');
-        removeControls(); // Remove controls again
-        
+    // Handle ready states
+    const onVideoReady = () => {
+        console.log('✅ Fallback video ready');
         video.style.opacity = '1';
         video.classList.add('loaded');
         
-        // Multiple autoplay attempts
-        const playAttempts = [
-            () => video.play(),
-            () => {
-                video.muted = true;
-                return video.play();
-            },
-            () => {
-                video.load();
-                video.muted = true;
-                return video.play();
-            }
-        ];
-        
-        const tryPlay = (attemptIndex = 0) => {
-            if (attemptIndex >= playAttempts.length) {
-                console.log('🎬 All autoplay attempts exhausted');
-                return;
-            }
-            
-            playAttempts[attemptIndex]()
-                .then(() => {
-                    console.log(`🎬 Autoplay successful on attempt ${attemptIndex + 1}`);
-                })
+        const attemptPlay = () => {
+            video.play()
+                .then(() => console.log('✅ Fallback video autoplay successful'))
                 .catch(error => {
-                    console.log(`🎬 Autoplay attempt ${attemptIndex + 1} failed:`, error.message);
-                    setTimeout(() => tryPlay(attemptIndex + 1), 500);
+                    console.log('⚠️ Fallback autoplay failed:', error.message);
+                    setTimeout(attemptPlay, 1000);
                 });
         };
         
-        tryPlay();
+        attemptPlay();
     };
     
-    // Multiple ready state listeners
     if (video.readyState >= 3) {
-        handleVideoReady();
+        onVideoReady();
     } else {
-        video.addEventListener('canplay', handleVideoReady, { once: true });
-        video.addEventListener('loadeddata', handleVideoReady, { once: true });
-        video.addEventListener('loadedmetadata', handleVideoReady, { once: true });
+        video.addEventListener('canplay', onVideoReady, { once: true });
+        video.addEventListener('loadeddata', onVideoReady, { once: true });
     }
     
-    // Force load
     video.load();
     
-    // User interaction fallbacks - try play on ANY user activity
-    const userEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
-    const playOnInteraction = () => {
-        if (video.paused) {
-            removeControls();
-            video.muted = true;
-            video.play()
-                .then(() => console.log('🎬 Play on user interaction successful'))
-                .catch(e => console.log('🎬 Play on interaction failed:', e.message));
-        }
-    };
-    
-    userEvents.forEach(event => {
-        document.addEventListener(event, playOnInteraction, { 
-            once: true, 
-            passive: event !== 'contextmenu' 
-        });
+    // User interaction fallback
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, () => {
+            if (video.paused) {
+                removeControls();
+                video.muted = true;
+                video.play().catch(console.log);
+            }
+        }, { once: true, passive: true });
     });
     
-    // SAFARI EMERGENCY FIX: Force immediate play attempt
-    const safariEmergencyPlay = () => {
-        const video = document.querySelector('.hero-video');
-        if (video) {
-            console.log('🚨 SAFARI EMERGENCY: Forcing video play');
-            video.removeAttribute('controls');
-            video.controls = false;
-            video.muted = true;
-            video.volume = 0;
-            video.play().catch(console.log);
-        }
-    };
-    
-    // Try emergency play every second for the first 10 seconds
-    let attempts = 0;
-    const emergencyInterval = setInterval(() => {
-        safariEmergencyPlay();
-        attempts++;
-        if (attempts >= 10) {
-            clearInterval(emergencyInterval);
-        }
-    }, 1000);
-    
-    console.log('🎬 NUCLEAR VIDEO INITIALIZATION COMPLETE WITH SAFARI EMERGENCY MODE');
-    
-    /* ===== LAST RESORT: JavaScript video element replacement ===== */
-    // If CSS doesn't work, we'll recreate the video element constantly
-    function nuclearVideoControlRemoval() {
-        const video = document.querySelector('.hero-video');
-        if (!video) return;
-        
-        console.log('🚨 DEPLOYING LAST RESORT: Video element replacement');
-        
-        let isPlaying = false;
-        let currentTime = 0;
-        
-        const recreateVideo = () => {
-            const parent = video.parentNode;
-            const newVideo = document.createElement('video');
-            
-            // Copy all attributes
-            newVideo.className = 'hero-video';
-            newVideo.autoplay = true;
-            newVideo.muted = true;
-            newVideo.loop = true;
-            newVideo.playsinline = true;
-            newVideo.setAttribute('webkit-playsinline', '');
-            newVideo.setAttribute('preload', 'auto');
-            newVideo.setAttribute('disablepictureinpicture', '');
-            newVideo.setAttribute('poster', 'images/Dubai-skyline-image.png');
-            newVideo.style.opacity = '1';
-            newVideo.classList.add('loaded');
-                 // Add source
-        const source = document.createElement('source');
-        source.src = 'video/hero-video.mp4?v=20260206';
-        source.type = 'video/mp4';
-            newVideo.appendChild(source);
-            
-            // Store current playback state
-            if (video && !video.paused) {
-                currentTime = video.currentTime;
-                isPlaying = true;
-            }
-            
-            // Replace the old video
-            parent.replaceChild(newVideo, video);
-            
-            // Restore playback state
-            newVideo.currentTime = currentTime;
-            if (isPlaying) {
-                newVideo.play().catch(console.log);
-            }
-            
-            console.log('🚨 Video element replaced');
-            return newVideo;
-        };
-        
-        // Replace video element every 500ms to prevent controls
-        setInterval(() => {
-            recreateVideo();
-        }, 500);
-    }
-    
-    // ACTIVATE NUCLEAR OPTION for Safari:
-    nuclearVideoControlRemoval();
+    console.log('📺 Fallback video system initialized');
 }
 
+// Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');

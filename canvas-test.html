@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Canvas Video Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .canvas-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            background: #111;
+            border: 2px solid #555;
+            margin: 20px 0;
+        }
+        .video-canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: default;
+        }
+        .hidden-video {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            width: 1px !important;
+            height: 1px !important;
+        }
+        .info {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h2>🎨 CANVAS VIDEO APPROACH - SAFARI TEST</h2>
+        <p>This method renders video to a canvas, completely bypassing Safari video controls.</p>
+        <div id="status">Loading...</div>
+    </div>
+    
+    <div class="canvas-container">
+        <canvas class="video-canvas" id="videoCanvas"></canvas>
+    </div>
+    
+    <!-- Hidden video element for source -->
+    <video class="hidden-video" id="hiddenVideo" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <source src="video/hero-video.mp4?v=canvas" type="video/mp4">
+    </video>
+    
+    <script>
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('hiddenVideo');
+        const status = document.getElementById('status');
+        
+        let animationId;
+        
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        }
+        
+        function renderVideoFrame() {
+            if (video.readyState >= video.HAVE_CURRENT_DATA) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                status.innerHTML = `
+                    ✅ Canvas rendering active<br>
+                    📺 Video time: ${video.currentTime.toFixed(1)}s<br>
+                    🎬 Video playing: ${!video.paused}<br>
+                    🔇 Video muted: ${video.muted}
+                `;
+            }
+            animationId = requestAnimationFrame(renderVideoFrame);
+        }
+        
+        // Initialize
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        video.addEventListener('loadeddata', () => {
+            console.log('Video loaded, starting canvas rendering');
+            renderVideoFrame();
+        });
+        
+        video.addEventListener('error', (e) => {
+            status.innerHTML = `❌ Video error: ${e.message}`;
+        });
+        
+        // Force play
+        video.play().catch(e => {
+            status.innerHTML += `<br>⚠️ Autoplay blocked: ${e.message}`;
+        });
+        
+        // Click to play fallback
+        canvas.addEventListener('click', () => {
+            video.play().catch(console.log);
+        });
+    </script>
+</body>
+</html>

@@ -1228,3 +1228,85 @@ video::-webkit-media-controls {
     visibility: hidden !important;
     opacity: 0 !important;
 }
+
+/* CANVAS VIDEO APPROACH FOR SAFARI - NO CONTROLS POSSIBLE */
+.hero-video-canvas {
+    position: absolute;
+    top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Hide the video source completely */
+.hero-video-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    pointer-events: none !important;
+}
+
+/* Fallback video for non-Safari browsers */
+.hero-video-fallback {
+    position: absolute;
+    top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none !important;
+    
+    /* All the nuclear control hiding */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Show appropriate video method based on browser */
+/* Safari detection via CSS */
+@supports (-webkit-appearance: none) and (not (contain: paint)) {
+    /* This targets Safari specifically */
+    .hero-video-canvas {
+        display: block;
+        opacity: 1;
+    }
+    .hero-video-fallback {
+        display: none !important;
+    }
+}
+
+/* For non-Safari browsers */
+@supports not ((-webkit-appearance: none) and (not (contain: paint))) {
+    .hero-video-canvas {
+        display: none !important;
+    }
+    .hero-video-fallback {
+        display: block;
+    }
+}
+
+/* Firefox specific */
+@-moz-document url-prefix() {
+    .hero-video-canvas {
+        display: none !important;
+    }
+    .hero-video-fallback {
+        display: block !important;
+    }
+}
+
+.hero-video-fallback.loaded { 
+    opacity: 1; 
+}

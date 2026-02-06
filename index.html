@@ -61,7 +61,17 @@
     </header>
 
     <section class="hero">
-        <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="images/Dubai-skyline-image.png">
+        <!-- Canvas approach for Safari - NO controls possible -->
+        <canvas class="hero-video-canvas" id="heroCanvas"></canvas>
+        
+        <!-- Hidden video element for canvas source -->
+        <video class="hero-video-hidden" id="heroVideoHidden" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture>
+            <source src="video/hero-video.mp4?v=20260206" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <!-- Fallback: Traditional video for non-Safari browsers -->
+        <video class="hero-video-fallback" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="images/Dubai-skyline-image.png">
             <source src="video/hero-video.mp4?v=20260206" type="video/mp4">
             Your browser does not support the video tag.
         </video>
