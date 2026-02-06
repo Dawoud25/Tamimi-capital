@@ -1334,19 +1334,46 @@ video::-webkit-media-controls {
     opacity: 1; 
 }
 
-/* SEAMLESS VIDEO LOOPING SOLUTION */
+/* ENHANCED SEAMLESS VIDEO LOOPING SOLUTION */
 @keyframes seamlessVideoLoop {
     0% { opacity: 1; }
     2% { opacity: 1; }
-    97% { opacity: 1; }
+    96% { opacity: 1; }
+    97% { opacity: 0.98; }
     98% { opacity: 0.95; }
-    99% { opacity: 0.9; }
+    99% { opacity: 0.92; }
+    99.5% { opacity: 0.95; }
     100% { opacity: 1; }
+}
+
+/* Additional crossfade overlay for even smoother transitions */
+@keyframes seamlessCrossfade {
+    0%, 94% { opacity: 0; }
+    96% { opacity: 0.15; }
+    98% { opacity: 0.3; }
+    99% { opacity: 0.15; }
+    100% { opacity: 0; }
+}
+
+/* Subtle gradient overlay that pulses during loop transition */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(0,0,0,0.08) 0%, 
+        rgba(255,255,255,0.02) 30%,
+        rgba(0,0,0,0.05) 70%,
+        rgba(255,255,255,0.01) 100%);
+    opacity: 0;
+    z-index: 1;
+    animation: seamlessCrossfade var(--video-duration, 15s) infinite linear;
+    pointer-events: none;
 }
 
 .hero-video.loaded {
     opacity: 1;
-    /* Add subtle animation to mask loop transitions */
+    /* Enhanced animation for smoother loop masking */
     animation: seamlessVideoLoop var(--video-duration, 15s) infinite linear;
 }
 
@@ -1355,4 +1382,32 @@ video::-webkit-media-controls {
     background-image: url('images/Dubai-skyline-image.png');
     background-size: cover;
     background-position: center;
+}
+
+/* VIDEO PERFORMANCE OPTIMIZATIONS */
+.hero-video {
+    /* Optimize loading and rendering performance */
+    will-change: opacity;
+    transform: translateZ(0); /* Force hardware acceleration */
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Smoother transitions during loading */
+.hero-video:not(.loaded) {
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+/* Optimize background image fallback */
+.hero-video {
+    background-image: url('../images/Dubai-skyline-image.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Remove background once video loads successfully */
+.hero-video.loaded.playing {
+    background-image: none !important;
 }

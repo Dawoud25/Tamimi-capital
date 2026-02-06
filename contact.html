@@ -66,9 +66,9 @@
                         and professional counterparties exploring alignment with our activities.
                     </p>
                     
-                    <form action="https://formspree.io/f/xykproro" method="POST">
+                    <form action="https://formspree.io/f/xykproro" method="POST" id="contact-form">
                         <input type="text" name="_gotcha" style="display:none">
-                        <input type="hidden" name="_next" value="https://dawoud25.github.io/Tamimi-capital/thank-you.html">
+                        <!-- Remove the _next field to handle redirect with JavaScript -->
                         
                         <div class="form-group">
                             <label for="name" class="form-label">Name</label>
@@ -193,6 +193,50 @@
     </div>
 
     <script src="js/main.js"></script>
+    
+    <script>
+        // Enhanced contact form handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contact-form');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Update button to show loading state
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+                
+                // Get form data
+                const formData = new FormData(form);
+                
+                // Submit to Formspree
+                fetch('https://formspree.io/f/xykproro', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Success - redirect to thank you page
+                        window.location.href = 'thank-you.html';
+                    } else {
+                        throw new Error('Form submission failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Reset button and show error
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                    alert('There was an error submitting your form. Please try again.');
+                });
+            });
+        });
+    </script>
     
 </body>
 </html>
