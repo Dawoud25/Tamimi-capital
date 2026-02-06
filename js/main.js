@@ -1,23 +1,6 @@
 /* =====================================================
-   D AL TAMIMI CAPITAL - Javfunction initVideo() {
-    console.log('🎬 INITIALIZING HYBRID VIDEO SYSTEM...');
-    
-    // Detect Safari
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
-                     /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    console.log(`🔍 Browser detection: ${isSafari ? 'SAFARI' : 'NON-SAFARI'}`);
-    
-    // TEMPORARY: Use traditional video for all browsers to test
-    // Remove this line to go back to canvas approach for Safari
-    const useTraditionalVideo = true;
-    
-    if (isSafari && !useTraditionalVideo) {
-        initCanvasVideo();
-    } else {
-        initFallbackVideo();
-    }
-}================================================= */
+   D AL TAMIMI CAPITAL - JavaScript
+   ===================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
     initHeader();
@@ -101,239 +84,41 @@ function initCookieBanner() {
 }
 
 function initVideo() {
-    console.log('🎬 INITIALIZING HYBRID VIDEO SYSTEM...');
+    console.log('🎬 ULTRA SIMPLE VIDEO INITIALIZATION...');
     
-    // Detect Safari
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
-                     /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    console.log(`🔍 Browser detection: ${isSafari ? 'SAFARI' : 'NON-SAFARI'}`);
-    
-    if (isSafari) {
-        initCanvasVideo();
-    } else {
-        initFallbackVideo();
-    }
-}
-
-function initCanvasVideo() {
-    console.log('🎨 INITIALIZING CANVAS VIDEO FOR SAFARI...');
-    
-    const canvas = document.getElementById('heroCanvas');
-    const video = document.getElementById('heroVideoHidden');
-    
-    if (!canvas || !video) {
-        console.error('Canvas or hidden video not found');
-        return;
-    }
-    
-    const ctx = canvas.getContext('2d');
-    let animationId;
-    
-    // Resize canvas to match container
-    function resizeCanvas() {
-        const hero = document.querySelector('.hero');
-        if (hero) {
-            canvas.width = hero.offsetWidth;
-            canvas.height = hero.offsetHeight;
-            console.log(`📐 Canvas resized to ${canvas.width}x${canvas.height}`);
-        }
-    }
-    
-    // Render video frames to canvas
-    function renderFrame() {
-        if (video.readyState >= video.HAVE_CURRENT_DATA) {
-            // Calculate aspect ratio and positioning
-            const videoAspect = video.videoWidth / video.videoHeight;
-            const canvasAspect = canvas.width / canvas.height;
-            
-            let sx, sy, sw, sh;
-            
-            if (videoAspect > canvasAspect) {
-                // Video is wider - crop sides
-                sh = video.videoHeight;
-                sw = sh * canvasAspect;
-                sx = (video.videoWidth - sw) / 2;
-                sy = 0;
-            } else {
-                // Video is taller - crop top/bottom
-                sw = video.videoWidth;
-                sh = sw / canvasAspect;
-                sx = 0;
-                sy = (video.videoHeight - sh) / 2;
-            }
-            
-            ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-        }
-        animationId = requestAnimationFrame(renderFrame);
-    }
-    
-    // Initialize
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    // AGGRESSIVE video setup for Safari
-    video.muted = true;
-    video.volume = 0;
-    video.controls = false;
-    video.removeAttribute('controls');
-    
-    video.addEventListener('loadeddata', () => {
-        console.log('✅ Safari video loaded, starting canvas rendering');
-        renderFrame();
-        canvas.style.opacity = '1';
-    });
-    
-    video.addEventListener('canplay', () => {
-        console.log('✅ Safari video can play');
-        if (video.paused) {
-            video.play().catch(console.log);
-        }
-    });
-    
-    // Force play attempts
-    const forcePlay = () => {
-        video.muted = true;
-        video.controls = false;
-        video.play()
-            .then(() => console.log('✅ Safari video playing via canvas'))
-            .catch(e => console.log('⚠️ Safari autoplay blocked:', e.message));
-    };
-    
-    video.addEventListener('loadedmetadata', forcePlay);
-    setTimeout(forcePlay, 100);
-    setTimeout(forcePlay, 500);
-    setTimeout(forcePlay, 1000);
-    
-    // Enhanced autoplay with user interaction fallback
-    let playAttempts = 0;
-    let isPlaying = false;
-    
-    const checkPlayState = () => {
-        if (!video.paused) {
-            isPlaying = true;
-            console.log('✅ Safari video is playing via canvas');
-            return;
-        }
-        
-        playAttempts++;
-        console.log(`🔄 Play attempt ${playAttempts} for Safari video`);
-        
-        if (playAttempts < 5) {
-            video.play().catch(e => {
-                console.log(`⚠️ Play attempt ${playAttempts} failed:`, e.message);
-                setTimeout(checkPlayState, 1000);
-            });
-        } else {
-            console.log('📱 Safari: Waiting for user interaction to start video');
-            // Show subtle indication that user can click to play
-            const hero = document.querySelector('.hero');
-            if (hero && !isPlaying) {
-                hero.style.cursor = 'pointer';
-                hero.addEventListener('click', forcePlay, { once: true });
-                hero.addEventListener('touchstart', forcePlay, { once: true });
-            }
-        }
-    };
-    
-    video.addEventListener('loadedmetadata', checkPlayState);
-    setTimeout(checkPlayState, 100);
-    setTimeout(checkPlayState, 500);
-    setTimeout(checkPlayState, 1000);
-    
-    // User interaction fallback
-    document.addEventListener('click', forcePlay, { once: true });
-    
-    console.log('🎨 Canvas video system initialized');
-}
-
-function initFallbackVideo() {
-    console.log('📺 INITIALIZING TRADITIONAL VIDEO...');
-    
-    // Try to find any video element on the page
-    let video = document.querySelector('.hero-video-fallback') || 
-                document.querySelector('.hero-video-hidden') ||
-                document.querySelector('.hero-video');
-    
+    const video = document.querySelector('.hero-video');
     if (!video) {
-        console.error('No video element found');
+        console.error('Video element not found');
         return;
     }
     
-    console.log('📺 Using video element:', video.className);
+    console.log('📺 Video found - applying ultra simple fix');
     
-    // Make sure it's visible
-    video.style.display = 'block';
-    video.style.visibility = 'visible';
-    video.style.position = 'absolute';
-    video.style.top = '50%';
-    video.style.left = '50%';
-    video.style.transform = 'translate(-50%, -50%)';
-    video.style.minWidth = '100%';
-    video.style.minHeight = '100%';
-    video.style.width = 'auto';
-    video.style.height = 'auto';
-    video.style.objectFit = 'cover';
-    video.style.zIndex = '0';
-    
-    // Apply all the nuclear control hiding
+    // Ultra simple setup
     video.muted = true;
-    video.autoplay = true;
-    video.loop = true;
     video.controls = false;
-    video.playsinline = true;
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
     video.removeAttribute('controls');
     
-    // Remove controls aggressively
-    const removeControls = () => {
-        video.controls = false;
-        video.removeAttribute('controls');
+    // Show video immediately
+    video.style.opacity = '1';
+    video.classList.add('loaded');
+    
+    // Try to play after a short delay
+    setTimeout(() => {
+        video.play()
+            .then(() => console.log('✅ Video autoplay successful'))
+            .catch(e => console.log('⚠️ Autoplay blocked:', e.message));
+    }, 500);
+    
+    // Additional play attempt on first user interaction
+    const playOnInteraction = () => {
+        video.play().catch(e => console.log('Play on interaction failed:', e.message));
     };
     
-    removeControls();
-    setInterval(removeControls, 100);
+    document.addEventListener('click', playOnInteraction, { once: true });
+    document.addEventListener('touchstart', playOnInteraction, { once: true });
     
-    // Handle ready states
-    const onVideoReady = () => {
-        console.log('✅ Fallback video ready');
-        video.style.opacity = '1';
-        video.classList.add('loaded');
-        
-        const attemptPlay = () => {
-            video.play()
-                .then(() => console.log('✅ Fallback video autoplay successful'))
-                .catch(error => {
-                    console.log('⚠️ Fallback autoplay failed:', error.message);
-                    setTimeout(attemptPlay, 1000);
-                });
-        };
-        
-        attemptPlay();
-    };
-    
-    if (video.readyState >= 3) {
-        onVideoReady();
-    } else {
-        video.addEventListener('canplay', onVideoReady, { once: true });
-        video.addEventListener('loadeddata', onVideoReady, { once: true });
-    }
-    
-    video.load();
-    
-    // User interaction fallback
-    ['click', 'touchstart', 'keydown'].forEach(event => {
-        document.addEventListener(event, () => {
-            if (video.paused) {
-                removeControls();
-                video.muted = true;
-                video.play().catch(console.log);
-            }
-        }, { once: true, passive: true });
-    });
-    
-    console.log('📺 Fallback video system initialized');
+    console.log('🎬 Ultra simple video initialization complete');
 }
 
 // Smooth scrolling for anchor links
