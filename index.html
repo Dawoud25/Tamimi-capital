@@ -53,7 +53,7 @@
     </header>
 
     <section class="hero">
-        <video class="hero-video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture x-webkit-airplay="deny" controls="false" poster="images/Dubai-skyline-image.png">
+        <video class="hero-video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture x-webkit-airplay="deny" poster="images/Dubai-skyline-image.png">
             <source src="video/hero-video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -274,5 +274,19 @@
     </div>
 
     <script src="js/main.js"></script>
+    <script>
+        // Direct video fix
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.hero-video');
+            if (video) {
+                video.muted = true;
+                video.controls = false;
+                video.play().catch(() => {
+                    console.log('Autoplay prevented, but video should still be visible');
+                });
+                setTimeout(() => video.classList.add('loaded'), 100);
+            }
+        });
+    </script>
 </body>
 </html>
