@@ -294,7 +294,7 @@ video::-webkit-media-controls {
 /* Desktop: show video, hide fallback image */
 @media (min-width: 769px) {
     .hero-bg { display: none; }
-    .hero-video { display: block; }
+    .hero-video { display: block !important; opacity: 1 !important; }
 }
 
 /* Mobile: show image, hide video */
