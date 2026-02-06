@@ -84,7 +84,7 @@ function initCookieBanner() {
 }
 
 function initVideo() {
-    console.log('🎬 ULTRA SIMPLE VIDEO INITIALIZATION...');
+    console.log('🎬 OPTIMIZED VIDEO INITIALIZATION...');
     
     const video = document.querySelector('.hero-video');
     if (!video) {
@@ -92,33 +92,60 @@ function initVideo() {
         return;
     }
     
-    console.log('📺 Video found - applying ultra simple fix');
+    console.log('📺 Video found - applying optimizations');
     
     // Ultra simple setup
     video.muted = true;
     video.controls = false;
     video.removeAttribute('controls');
+    video.preload = 'auto';
     
-    // Show video immediately
+    // Get video duration for seamless looping animation
+    video.addEventListener('loadedmetadata', () => {
+        const duration = video.duration;
+        console.log(`📹 Video duration: ${duration}s`);
+        
+        // Set CSS custom property for animation duration
+        document.documentElement.style.setProperty('--video-duration', duration + 's');
+    });
+    
+    // Show video immediately with background
     video.style.opacity = '1';
     video.classList.add('loaded');
     
-    // Try to play after a short delay
-    setTimeout(() => {
+    // Enhanced autoplay with faster retry
+    const attemptPlay = (retryCount = 0) => {
         video.play()
-            .then(() => console.log('✅ Video autoplay successful'))
-            .catch(e => console.log('⚠️ Autoplay blocked:', e.message));
-    }, 500);
-    
-    // Additional play attempt on first user interaction
-    const playOnInteraction = () => {
-        video.play().catch(e => console.log('Play on interaction failed:', e.message));
+            .then(() => {
+                console.log('✅ Video autoplay successful');
+                // Remove background image once video is playing
+                setTimeout(() => {
+                    video.style.backgroundImage = 'none';
+                }, 1000);
+            })
+            .catch(e => {
+                console.log(`⚠️ Autoplay blocked (attempt ${retryCount + 1}):`, e.message);
+                if (retryCount < 3) {
+                    setTimeout(() => attemptPlay(retryCount + 1), 500);
+                }
+            });
     };
     
-    document.addEventListener('click', playOnInteraction, { once: true });
-    document.addEventListener('touchstart', playOnInteraction, { once: true });
+    // Try to play after short delay
+    setTimeout(attemptPlay, 100);
     
-    console.log('🎬 Ultra simple video initialization complete');
+    // Play on any user interaction
+    const playOnInteraction = () => {
+        attemptPlay();
+        // Remove background image when user initiates play
+        video.style.backgroundImage = 'none';
+    };
+    
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, playOnInteraction, { once: true });
+    });
+    
+    console.log('🎬 Optimized video initialization complete');
 }
 
 // Smooth scrolling for anchor links

@@ -1333,3 +1333,26 @@ video::-webkit-media-controls {
 .hero-video.loaded { 
     opacity: 1; 
 }
+
+/* SEAMLESS VIDEO LOOPING SOLUTION */
+@keyframes seamlessVideoLoop {
+    0% { opacity: 1; }
+    2% { opacity: 1; }
+    97% { opacity: 1; }
+    98% { opacity: 0.95; }
+    99% { opacity: 0.9; }
+    100% { opacity: 1; }
+}
+
+.hero-video.loaded {
+    opacity: 1;
+    /* Add subtle animation to mask loop transitions */
+    animation: seamlessVideoLoop var(--video-duration, 15s) infinite linear;
+}
+
+/* Loading state improvements with background image while video loads */
+.hero-video {
+    background-image: url('images/Dubai-skyline-image.png');
+    background-size: cover;
+    background-position: center;
+}
