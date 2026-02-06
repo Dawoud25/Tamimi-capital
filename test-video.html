@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Control Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .test-container {
+            width: 800px;
+            height: 450px;
+            position: relative;
+            margin: 20px auto;
+            border: 2px solid #333;
+        }
+        .info {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .checklist {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .checklist li {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .pass { color: #4CAF50; }
+        .fail { color: #f44336; }
+        .pending { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>Video Controls Hide Test</h1>
+        <p>Testing the comprehensive video control hiding solution</p>
+    </div>
+    
+    <div class="test-container">
+        <div class="hero">
+            <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="images/Dubai-skyline-image.png">
+                <source src="video/hero-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    
+    <div class="checklist">
+        <h3>Checklist:</h3>
+        <ul>
+            <li>✅ Video should load automatically</li>
+            <li>✅ Video should be muted by default</li>
+            <li>✅ Video should loop continuously</li>
+            <li>✅ No play button should be visible (Safari)</li>
+            <li>✅ No media controls should be visible (Chrome/Edge)</li>
+            <li>✅ Right-click context menu should be disabled</li>
+            <li>✅ Video should autoplay after page load</li>
+            <li>✅ No focus outline should appear when clicked</li>
+        </ul>
+        
+        <div id="video-status"></div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        // Additional test logging
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.hero-video');
+            const status = document.getElementById('video-status');
+            
+            if (!video) {
+                status.innerHTML = '<p class="fail">❌ Video element not found!</p>';
+                return;
+            }
+            
+            let checks = [];
+            
+            // Check video properties
+            setTimeout(() => {
+                checks.push(video.muted ? '✅ Video is muted' : '❌ Video is NOT muted');
+                checks.push(video.autoplay ? '✅ Autoplay enabled' : '❌ Autoplay disabled');
+                checks.push(video.loop ? '✅ Loop enabled' : '❌ Loop disabled');
+                checks.push(!video.controls ? '✅ Controls disabled' : '❌ Controls still enabled');
+                checks.push(video.playsinline ? '✅ Playsinline enabled' : '❌ Playsinline disabled');
+                
+                status.innerHTML = '<h4>Video Properties:</h4>' + 
+                    checks.map(check => '<p>' + check + '</p>').join('');
+            }, 1000);
+            
+            // Test autoplay
+            video.addEventListener('play', () => {
+                console.log('✅ Video started playing');
+                status.innerHTML += '<p class="pass">✅ Video autoplay successful!</p>';
+            });
+            
+            video.addEventListener('error', (e) => {
+                console.log('❌ Video error:', e);
+                status.innerHTML += '<p class="fail">❌ Video error occurred!</p>';
+            });
+        });
+    </script>
+</body>
+</html>
